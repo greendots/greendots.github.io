@@ -76,7 +76,7 @@ document.getElementById('contactForm').addEventListener('submit', function(event
   const data = { nombre: name, correo: email };
 
   // Enviar datos al endpoint /usuarios en el puerto 4444
-  fetch('http://127.0.0.1:4444/usuarios', {
+  fetch('greendots.sytes.net:4444/usuarios', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
