@@ -126,25 +126,3 @@ document.getElementById('contactForm').addEventListener('submit', function(event
     console.error('Error sending data to Firebase:', error);
   });
 });
-
-function testSuccessMessage() {
-  // Selecciona o crea el contenedor del mensaje
-  let messageElement = document.getElementById('successMessage');
-  if (!messageElement) {
-    messageElement = document.createElement('div');
-    messageElement.id = 'successMessage';
-    // Agregar el mensaje al final del contenedor del formulario
-    document.querySelector('.form-container').appendChild(messageElement);
-  }
-  
-  // Establece el texto y activa la animación usando la traducción
-  messageElement.textContent = translations[currentLang].successMessage;
-  messageElement.classList.remove('hidden'); // Remueve la clase oculta si existe
-  messageElement.classList.add('message-animation');
-  
-  // Después de 4 segundos, quita la animación y oculta el mensaje
-  setTimeout(() => {
-    messageElement.classList.remove('message-animation');
-    messageElement.classList.add('hidden');
-  }, 4000);
-}
