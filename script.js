@@ -6,7 +6,8 @@ const translations = {
     endline: "¡Únete a nuestra comunidad y no te pierdas nada!",
     nameLabel: "Nombre",
     emailLabel: "Correo electrónico",
-    submit: "Enviar"
+    submit: "Enviar",
+    successMessage: "Los datos se han enviado correctamente, gracias por confiar en nosotros 🫶"
   },
   gl: {
     headline: "Infórmate das nosas novidades.",
@@ -14,7 +15,8 @@ const translations = {
     endline: "Únete á nosa comunidade e non perdas nada!",
     nameLabel: "Nome",
     emailLabel: "Correo electrónico",
-    submit: "Enviar"
+    submit: "Enviar",
+    successMessage: "Os datos enviáronse correctamente, grazas por confiar en nós 🫶"
   },
   pt: {
     headline: "Fique por dentro das nossas novidades.",
@@ -22,7 +24,8 @@ const translations = {
     endline: "Junte-se à nossa comunidade e não perca nada!",
     nameLabel: "Nome",
     emailLabel: "E-mail",
-    submit: "Enviar"
+    submit: "Enviar",
+    successMessage: "Os dados foram enviados com sucesso, obrigado por confiar em nós 🫶"
   },
   en: {
     headline: "Stay up to date with our news.",
@@ -30,15 +33,17 @@ const translations = {
     endline: "Join our community and don't miss a thing!",
     nameLabel: "Name",
     emailLabel: "Email",
-    submit: "Submit"
+    submit: "Submit",
+    successMessage: "Data sent successfully, thank you for trusting us 🫶"
   }
 };
 
-
+let currentLang = "es";
 // Función para actualizar el idioma en la página
 function updateLanguage(lang) {
   // Verifica si existe la traducción para el idioma seleccionado
   if (translations[lang]) {
+    currentLang = lang;
     document.getElementById("headline").innerHTML = `<strong>${translations[lang].headline}</strong>`;
     document.getElementById("description").textContent = translations[lang].description;
     document.getElementById("endline").textContent = translations[lang].endline;
@@ -52,6 +57,7 @@ function updateLanguage(lang) {
 const browserLang = navigator.language.slice(0, 2);
 if (translations[browserLang]) {
   updateLanguage(browserLang);
+
 } else {
   updateLanguage("es");
 }
@@ -72,34 +78,73 @@ document.getElementById('contactForm').addEventListener('submit', function(event
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   
-    // [START Realtime Database Fetch]
-    // Firebase Realtime Database URL
-    const firebaseDBUrl = 'https://greendotsform-default-rtdb.europe-west1.firebasedatabase.app/user.json';
+  // Firebase Realtime Database URL
+  const firebaseDBUrl = 'https://greendotsform-default-rtdb.europe-west1.firebasedatabase.app/user.json';
 
-    // Data to be sent to Firebase
-    const userData = {
-      name: name,
-      email: email
-    };
+  // Data to be sent to Firebase
+  const userData = {
+    name: name,
+    email: email
+  };
 
-    // Send data to Firebase Realtime Database
-    fetch(firebaseDBUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('Data sent to Firebase successfully!');
-      } else {
-        console.error('Error sending data to Firebase:', response.status);
+  // Send data to Firebase Realtime Database
+  fetch(firebaseDBUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData)
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Data sent to Firebase successfully!');
+
+      // Crear o seleccionar el contenedor del mensaje
+      let messageElement = document.getElementById('successMessage');
+      if (!messageElement) {
+        messageElement = document.createElement('div');
+        messageElement.id = 'successMessage';
+        // Agregar el mensaje al final del contenedor del formulario
+        document.querySelector('.form-container').appendChild(messageElement);
       }
-    })
-    .catch(error => {
-      console.error('Error sending data to Firebase:', error);
-    });
-    // [END Realtime Database Fetch]
+      
+      // Establecer el texto y activar la animación con la traducción del mensaje
+      messageElement.textContent = translations[currentLang].successMessage;
+      messageElement.classList.remove('hidden');  // En caso de usar una clase oculta
+      messageElement.classList.add('message-animation');
 
+      // Opcional: quitar el elemento o reiniciar la animación después de 4 segundos
+      setTimeout(() => {
+        messageElement.classList.remove('message-animation');
+        messageElement.classList.add('hidden');
+      }, 4000);   
+    } else {
+      console.error('Error sending data to Firebase:', response.status);
+    }
+  })
+  .catch(error => {
+    console.error('Error sending data to Firebase:', error);
+  });
 });
+
+function testSuccessMessage() {
+  // Selecciona o crea el contenedor del mensaje
+  let messageElement = document.getElementById('successMessage');
+  if (!messageElement) {
+    messageElement = document.createElement('div');
+    messageElement.id = 'successMessage';
+    // Agregar el mensaje al final del contenedor del formulario
+    document.querySelector('.form-container').appendChild(messageElement);
+  }
+  
+  // Establece el texto y activa la animación usando la traducción
+  messageElement.textContent = translations[currentLang].successMessage;
+  messageElement.classList.remove('hidden'); // Remueve la clase oculta si existe
+  messageElement.classList.add('message-animation');
+  
+  // Después de 4 segundos, quita la animación y oculta el mensaje
+  setTimeout(() => {
+    messageElement.classList.remove('message-animation');
+    messageElement.classList.add('hidden');
+  }, 4000);
+}
